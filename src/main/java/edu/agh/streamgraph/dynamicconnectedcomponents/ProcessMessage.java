@@ -5,12 +5,12 @@ import org.apache.flink.types.NullValue;
 
 public class ProcessMessage {
     public ProcessEvent eventType;
-    public Long vertexId;
-    public Edge<Long, NullValue> edge;
+    public Integer vertexId;
+    public Edge<Integer, NullValue> edge;
     public InternalMessage internalMessage;
 
 
-    public static ProcessMessage forEdgeIncoming(Edge<Long, NullValue> edge) {
+    public static ProcessMessage forEdgeIncoming(Edge<Integer, NullValue> edge) {
         ProcessMessage pm = new ProcessMessage();
         pm.eventType = ProcessEvent.EDGE_INCOMING;
         pm.vertexId = edge.f0;
@@ -18,7 +18,7 @@ public class ProcessMessage {
         return pm;
     }
 
-    public static ProcessMessage forEdgeOutgoing(Edge<Long, NullValue> edge, InternalMessage cm) {
+    public static ProcessMessage forEdgeOutgoing(Edge<Integer, NullValue> edge, InternalMessage cm) {
         ProcessMessage pm = new ProcessMessage();
         pm.eventType = ProcessEvent.EDGE_OUTGOING;
         pm.vertexId = edge.f0;

@@ -13,19 +13,19 @@ import java.time.Duration;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        testIteration3();
+        testIteration();
     }
 
-    public static void testIteration3() throws Exception {
+    public static void testIteration() throws Exception {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironment();
         env.setParallelism(4);
 
-        DataStream<Edge<Long, NullValue> > initialEdges = env.fromElements(
-                new Edge<Long, NullValue> (1L, 2L, NullValue.getInstance()),
-                new Edge<Long, NullValue> (2L, 3L, NullValue.getInstance()),
-                new Edge<Long, NullValue> (4L, 5L, NullValue.getInstance())
+        DataStream<Edge<Integer, NullValue> > initialEdges = env.fromElements(
+                new Edge<Integer, NullValue> (1, 2, NullValue.getInstance()),
+                new Edge<Integer, NullValue> (2, 3, NullValue.getInstance()),
+                new Edge<Integer, NullValue> (4, 5, NullValue.getInstance())
         ).assignTimestampsAndWatermarks(
-                WatermarkStrategy.<Edge<Long, NullValue> >forBoundedOutOfOrderness(Duration.ofSeconds(1))
+                WatermarkStrategy.<Edge<Integer, NullValue> >forBoundedOutOfOrderness(Duration.ofSeconds(1))
                         .withTimestampAssigner((element, recordTimestamp) -> System.currentTimeMillis())
                         .withIdleness(Duration.ofSeconds(5))
         );

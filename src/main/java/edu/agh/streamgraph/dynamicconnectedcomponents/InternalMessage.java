@@ -1,11 +1,11 @@
 package edu.agh.streamgraph.dynamicconnectedcomponents;
 
 public class InternalMessage {
-    public Long vertexId;
-    public Long componentId;
+    public Integer vertexId;
+    public Integer componentId;
 
     public InternalMessage() {}
-    public InternalMessage(Long vertexId, Long componentId) {
+    public InternalMessage(Integer vertexId, Integer componentId) {
         this.vertexId = vertexId;
         this.componentId = componentId;
     }
