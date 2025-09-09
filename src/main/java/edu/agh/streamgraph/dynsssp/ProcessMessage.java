@@ -5,12 +5,12 @@ import org.apache.flink.types.NullValue;
 
 public class ProcessMessage {
     public ProcessEvent eventType;
-    public Long vertexId;
-    public Long vertexEndpoint;
-    public Long distance;
+    public Integer vertexId;
+    public Integer vertexEndpoint;
+    public Integer distance;
 
 
-    public static ProcessMessage forVertexAddition(Edge<Long, NullValue> edge) {
+    public static ProcessMessage forVertexAddition(Edge<Integer, NullValue> edge) {
         ProcessMessage pm = new ProcessMessage();
         pm.eventType = ProcessEvent.ADD_VERTEX;
         pm.vertexId = edge.f0;
@@ -18,7 +18,7 @@ public class ProcessMessage {
         return pm;
     }
 
-    public static ProcessMessage forDistanceUpdate(Long vertexId, Long vertexEndpoint, Long distance) {
+    public static ProcessMessage forDistanceUpdate(Integer vertexId, Integer vertexEndpoint, Integer distance) {
         ProcessMessage pm = new ProcessMessage();
         pm.eventType = ProcessEvent.UPDATE_DISTANCE;
         pm.vertexId = vertexId;
@@ -27,7 +27,7 @@ public class ProcessMessage {
         return pm;
     }
 
-    public static ProcessMessage forDistanceRequest(Long vertexId, Long vertexEndpoint) {
+    public static ProcessMessage forDistanceRequest(Integer vertexId, Integer vertexEndpoint) {
         ProcessMessage pm = new ProcessMessage();
         pm.eventType = ProcessEvent.REQUEST_DISTANCE;
         pm.vertexId = vertexId;
@@ -35,7 +35,7 @@ public class ProcessMessage {
         return pm;
     }
 
-    public static ProcessMessage forVertexOutgoing(Long vertexId, Long vertexEndpoint, Long distance) {
+    public static ProcessMessage forVertexOutgoing(Integer vertexId, Integer vertexEndpoint, Integer distance) {
         ProcessMessage pm = new ProcessMessage();
         pm.eventType = ProcessEvent.VERTEX_OUTGOING;
         pm.vertexId = vertexId;

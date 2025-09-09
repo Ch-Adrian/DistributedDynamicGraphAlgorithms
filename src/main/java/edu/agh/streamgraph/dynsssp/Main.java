@@ -19,17 +19,17 @@ public class Main {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironment();
         env.setParallelism(4);
 
-        DataStream<Edge<Long, NullValue> > initialEdges = env.fromElements(
-                new Edge<Long, NullValue> (1L, 2L, NullValue.getInstance()),
-                new Edge<Long, NullValue> (2L, 3L, NullValue.getInstance()),
-                new Edge<Long, NullValue> (3L, 4L, NullValue.getInstance()),
-                new Edge<Long, NullValue> (2L, 5L, NullValue.getInstance()),
-                new Edge<Long, NullValue> (5L, 6L, NullValue.getInstance()),
-                new Edge<Long, NullValue> (6L, 7L, NullValue.getInstance()),
-                new Edge<Long, NullValue> (7L, 8L, NullValue.getInstance()),
-                new Edge<Long, NullValue> (8L, 4L, NullValue.getInstance())
+        DataStream<Edge<Integer, NullValue> > initialEdges = env.fromElements(
+                new Edge<Integer, NullValue> (1, 2, NullValue.getInstance()),
+                new Edge<Integer, NullValue> (2, 3, NullValue.getInstance()),
+                new Edge<Integer, NullValue> (3, 4, NullValue.getInstance()),
+                new Edge<Integer, NullValue> (2, 5, NullValue.getInstance()),
+                new Edge<Integer, NullValue> (5, 6, NullValue.getInstance()),
+                new Edge<Integer, NullValue> (6, 7, NullValue.getInstance()),
+                new Edge<Integer, NullValue> (7, 8, NullValue.getInstance()),
+                new Edge<Integer, NullValue> (8, 4, NullValue.getInstance())
         ).assignTimestampsAndWatermarks(
-                WatermarkStrategy.<Edge<Long, NullValue>>forBoundedOutOfOrderness(Duration.ofSeconds(1))
+                WatermarkStrategy.<Edge<Integer, NullValue>>forBoundedOutOfOrderness(Duration.ofSeconds(1))
                         .withTimestampAssigner((element, recordTimestamp) -> System.currentTimeMillis())
                         .withIdleness(Duration.ofSeconds(5))
         );

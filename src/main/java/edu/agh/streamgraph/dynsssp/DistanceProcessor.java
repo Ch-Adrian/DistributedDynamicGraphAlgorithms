@@ -10,48 +10,48 @@ import org.apache.flink.util.Collector;
 
 import java.util.Objects;
 
-public class DistanceProcessor extends KeyedProcessFunction<Long, ProcessMessage, ProcessMessage> {
+public class DistanceProcessor extends KeyedProcessFunction<Integer, ProcessMessage, ProcessMessage> {
 
-    private ValueState<Long> vertexId;
-    private ValueState<Long> distanceState;
-    private MapState<Long, Long> neighborsIds;
-    private Long soureceId = 1L;
+    private ValueState<Integer> vertexId;
+    private ValueState<Integer> distanceState;
+    private MapState<Integer, Integer> neighborsIds;
+    private Integer soureceId = 1;
 
     @Override
     public void open(Configuration parameters) throws Exception {
         super.open(parameters);
         distanceState = getRuntimeContext().getState(
-                new ValueStateDescriptor<>("label", Long.class)
+                new ValueStateDescriptor<>("label", Integer.class)
         );
         neighborsIds = getRuntimeContext().getMapState(
-                new MapStateDescriptor<>("neighbors", Long.class, Long.class)
+                new MapStateDescriptor<>("neighbors", Integer.class, Integer.class)
         );
         vertexId = getRuntimeContext().getState(
-                new ValueStateDescriptor<>("vertexId", Long.class)
+                new ValueStateDescriptor<>("vertexId", Integer.class)
         );
     }
 
     @Override
     public void processElement(ProcessMessage processMessage,
-                               KeyedProcessFunction<Long, ProcessMessage, ProcessMessage>.Context context,
+                               KeyedProcessFunction<Integer, ProcessMessage, ProcessMessage>.Context context,
                                Collector<ProcessMessage> collector) throws Exception {
         if(vertexId.value() == null) vertexId.update(context.getCurrentKey());
-        if(distanceState.value() == null) distanceState.update(Long.MAX_VALUE);
+        if(distanceState.value() == null) distanceState.update(Integer.MAX_VALUE);
 
         if(processMessage.eventType.equals(ProcessEvent.ADD_VERTEX)){
             System.out.println("Processing message for vertex " + context.getCurrentKey() + ": " + processMessage);
-            Long vertexEnding = processMessage.vertexEndpoint;
+            Integer vertexEnding = processMessage.vertexEndpoint;
             if(!neighborsIds.contains(vertexEnding)){
-                neighborsIds.put(vertexEnding, Long.MAX_VALUE);
+                neighborsIds.put(vertexEnding, Integer.MAX_VALUE);
             }
             if(Objects.equals(this.soureceId, processMessage.vertexId)){
-                distanceState.update(0L);
-                collector.collect(ProcessMessage.forVertexOutgoing(vertexId.value(), vertexEnding, 0L));
-                for(Long neighbor : neighborsIds.keys()){
-                    collector.collect(ProcessMessage.forDistanceUpdate(neighbor, vertexId.value(), 0L));
+                distanceState.update(0);
+                collector.collect(ProcessMessage.forVertexOutgoing(vertexId.value(), vertexEnding, 0));
+                for(Integer neighbor : neighborsIds.keys()){
+                    collector.collect(ProcessMessage.forDistanceUpdate(neighbor, vertexId.value(), 0));
                 }
             } else {
-                if(distanceState.value() != Long.MAX_VALUE){
+                if(distanceState.value() != Integer.MAX_VALUE){
                     collector.collect(ProcessMessage.forDistanceUpdate(vertexEnding, vertexId.value(), distanceState.value()));
                 } else {
                     collector.collect(ProcessMessage.forDistanceRequest(vertexEnding, vertexId.value()) );
@@ -60,13 +60,13 @@ public class DistanceProcessor extends KeyedProcessFunction<Long, ProcessMessage
         }
         else if(processMessage.eventType.equals(ProcessEvent.UPDATE_DISTANCE)) {
             System.out.println("Processing message for vertex " + context.getCurrentKey() + ": " + processMessage);
-            if(processMessage.distance == Long.MAX_VALUE)
+            if(processMessage.distance == Integer.MAX_VALUE)
                 return;
-            Long newDistance = processMessage.distance + 1L;
+            Integer newDistance = processMessage.distance + 1;
             if (newDistance < distanceState.value()) {
                 distanceState.update(newDistance);
                 collector.collect(ProcessMessage.forVertexOutgoing(vertexId.value(), processMessage.vertexEndpoint, newDistance));
-                for (Long neighbor : neighborsIds.keys()) {
+                for (Integer neighbor : neighborsIds.keys()) {
                     collector.collect(ProcessMessage.forDistanceUpdate(neighbor, vertexId.value(), distanceState.value()));
                 }
             }
