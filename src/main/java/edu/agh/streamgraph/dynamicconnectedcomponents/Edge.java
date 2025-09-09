@@ -1,4 +1,4 @@
-package edu.agh.streamgraph.dynamicconnectivitycomponents;
+package edu.agh.streamgraph.dynamicconnectedcomponents;
 
 public class Edge {
     public Long source;

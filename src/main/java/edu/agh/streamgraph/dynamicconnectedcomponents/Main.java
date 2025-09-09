@@ -1,4 +1,4 @@
-package edu.agh.streamgraph.dynamicconnectivitycomponents;
+package edu.agh.streamgraph.dynamicconnectedcomponents;
 
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.streaming.api.datastream.DataStream;

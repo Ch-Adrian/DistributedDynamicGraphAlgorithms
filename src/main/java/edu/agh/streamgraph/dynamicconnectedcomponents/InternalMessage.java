@@ -1,4 +1,4 @@
-package edu.agh.streamgraph.dynamicconnectivitycomponents;
+package edu.agh.streamgraph.dynamicconnectedcomponents;
 
 public class InternalMessage {
     public Long vertexId;

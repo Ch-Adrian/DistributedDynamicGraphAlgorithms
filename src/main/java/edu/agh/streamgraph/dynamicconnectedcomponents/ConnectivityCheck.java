@@ -1,6 +1,6 @@
-package edu.agh.streamgraph.dynamicconnectivitycomponents;
+package edu.agh.streamgraph.dynamicconnectedcomponents;
 
-import edu.agh.streamgraph.dynamicconnectivitycomponents.algorithmConnectivityIncremental.Graph;
+import edu.agh.streamgraph.dynamicconnectedcomponents.algorithmConnectivityIncremental.Graph;
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;

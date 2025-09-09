@@ -1,4 +1,4 @@
-package edu.agh.streamgraph.dynamicconnectivitycomponents.algorithmConnectivityIncremental;
+package edu.agh.streamgraph.dynamicconnectedcomponents.algorithmConnectivityIncremental;
 
 import java.io.Serializable;
 import java.util.Objects;

@@ -1,4 +1,4 @@
-package edu.agh.streamgraph.dynamicconnectivitycomponents;
+package edu.agh.streamgraph.dynamicconnectedcomponents;
 
 public enum ProcessEvent {
     EDGE_INCOMING,
