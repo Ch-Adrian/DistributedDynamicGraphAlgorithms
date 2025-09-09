@@ -1,5 +1,8 @@
 package edu.agh.streamgraph.dynsssp;
 
+import org.apache.flink.graph.Edge;
+import org.apache.flink.types.NullValue;
+
 public class ProcessMessage {
     public ProcessEvent eventType;
     public Long vertexId;
@@ -7,11 +10,11 @@ public class ProcessMessage {
     public Long distance;
 
 
-    public static ProcessMessage forVertexAddition(Edge edge) {
+    public static ProcessMessage forVertexAddition(Edge<Long, NullValue> edge) {
         ProcessMessage pm = new ProcessMessage();
         pm.eventType = ProcessEvent.ADD_VERTEX;
-        pm.vertexId = edge.source;
-        pm.vertexEndpoint = edge.target;
+        pm.vertexId = edge.f0;
+        pm.vertexEndpoint = edge.f1;
         return pm;
     }
 

@@ -1,9 +1,11 @@
 package edu.agh.streamgraph.dynsssp;
 
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.graph.Edge;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.IterativeStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.types.NullValue;
 
 
 import java.time.Duration;
@@ -17,17 +19,17 @@ public class Main {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironment();
         env.setParallelism(4);
 
-        DataStream<Edge> initialEdges = env.fromElements(
-                new Edge(1L, 2L),
-                new Edge(2L, 3L),
-                new Edge(3L, 4L),
-                new Edge(2L, 5L),
-                new Edge(5L, 6L),
-                new Edge(6L, 7L),
-                new Edge(7L, 8L),
-                new Edge(8L, 4L)
+        DataStream<Edge<Long, NullValue> > initialEdges = env.fromElements(
+                new Edge<Long, NullValue> (1L, 2L, NullValue.getInstance()),
+                new Edge<Long, NullValue> (2L, 3L, NullValue.getInstance()),
+                new Edge<Long, NullValue> (3L, 4L, NullValue.getInstance()),
+                new Edge<Long, NullValue> (2L, 5L, NullValue.getInstance()),
+                new Edge<Long, NullValue> (5L, 6L, NullValue.getInstance()),
+                new Edge<Long, NullValue> (6L, 7L, NullValue.getInstance()),
+                new Edge<Long, NullValue> (7L, 8L, NullValue.getInstance()),
+                new Edge<Long, NullValue> (8L, 4L, NullValue.getInstance())
         ).assignTimestampsAndWatermarks(
-                WatermarkStrategy.<Edge>forBoundedOutOfOrderness(Duration.ofSeconds(1))
+                WatermarkStrategy.<Edge<Long, NullValue>>forBoundedOutOfOrderness(Duration.ofSeconds(1))
                         .withTimestampAssigner((element, recordTimestamp) -> System.currentTimeMillis())
                         .withIdleness(Duration.ofSeconds(5))
         );

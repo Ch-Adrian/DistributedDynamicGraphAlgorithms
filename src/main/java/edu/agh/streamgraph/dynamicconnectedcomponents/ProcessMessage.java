@@ -1,24 +1,27 @@
 package edu.agh.streamgraph.dynamicconnectedcomponents;
 
+import org.apache.flink.graph.Edge;
+import org.apache.flink.types.NullValue;
+
 public class ProcessMessage {
     public ProcessEvent eventType;
     public Long vertexId;
-    public Edge edge;
+    public Edge<Long, NullValue> edge;
     public InternalMessage internalMessage;
 
 
-    public static ProcessMessage forEdgeIncoming(Edge edge) {
+    public static ProcessMessage forEdgeIncoming(Edge<Long, NullValue> edge) {
         ProcessMessage pm = new ProcessMessage();
         pm.eventType = ProcessEvent.EDGE_INCOMING;
-        pm.vertexId = edge.source;
+        pm.vertexId = edge.f0;
         pm.edge = edge;
         return pm;
     }
 
-    public static ProcessMessage forEdgeOutgoing(Edge edge, InternalMessage cm) {
+    public static ProcessMessage forEdgeOutgoing(Edge<Long, NullValue> edge, InternalMessage cm) {
         ProcessMessage pm = new ProcessMessage();
         pm.eventType = ProcessEvent.EDGE_OUTGOING;
-        pm.vertexId = edge.source;
+        pm.vertexId = edge.f0;
         pm.edge = edge;
         pm.internalMessage = cm;
         return pm;

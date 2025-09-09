@@ -6,7 +6,9 @@ import org.apache.flink.api.common.state.ValueState;
 import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction;
+import org.apache.flink.types.NullValue;
 import org.apache.flink.util.Collector;
+import org.apache.flink.graph.Edge;
 
 public class IterativeFunction extends KeyedProcessFunction<Long, ProcessMessage, ProcessMessage> {
 
@@ -35,15 +37,15 @@ public class IterativeFunction extends KeyedProcessFunction<Long, ProcessMessage
         if(labelState.value() == null) labelState.update(vertexId.value());
 
         if(processMessage.eventType.equals(ProcessEvent.EDGE_INCOMING)){
-            Edge edge = processMessage.edge;
-            boolean isChange = edge.target < labelState.value();
+            Edge<Long, NullValue>  edge = processMessage.edge;
+            boolean isChange = edge.f1 < labelState.value();
             if(isChange){
-                labelState.update(edge.target);
+                labelState.update(edge.f1);
                 for(Long neighbor : neighborsState.keys()){
                     collector.collect(ProcessMessage.forInternalMessage(new InternalMessage(neighbor, labelState.value())));
                 }
-                if(!neighborsState.contains(edge.target)){
-                    neighborsState.put(edge.target, 1L);
+                if(!neighborsState.contains(edge.f1)){
+                    neighborsState.put(edge.f1, 1L);
                 }
             }
             collector.collect(ProcessMessage.forEdgeOutgoing(edge, new InternalMessage(vertexId.value(), labelState.value())));

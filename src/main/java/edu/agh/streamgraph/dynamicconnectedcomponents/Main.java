@@ -6,6 +6,8 @@ import org.apache.flink.streaming.api.datastream.IterativeStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
+import org.apache.flink.graph.Edge;
+import org.apache.flink.types.NullValue;
 
 import java.time.Duration;
 
@@ -18,12 +20,12 @@ public class Main {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironment();
         env.setParallelism(4);
 
-        DataStream<Edge> initialEdges = env.fromElements(
-                new Edge(1L, 2L),
-                new Edge(2L, 3L),
-                new Edge(4L, 5L)
+        DataStream<Edge<Long, NullValue> > initialEdges = env.fromElements(
+                new Edge<Long, NullValue> (1L, 2L, NullValue.getInstance()),
+                new Edge<Long, NullValue> (2L, 3L, NullValue.getInstance()),
+                new Edge<Long, NullValue> (4L, 5L, NullValue.getInstance())
         ).assignTimestampsAndWatermarks(
-                WatermarkStrategy.<Edge>forBoundedOutOfOrderness(Duration.ofSeconds(1))
+                WatermarkStrategy.<Edge<Long, NullValue> >forBoundedOutOfOrderness(Duration.ofSeconds(1))
                         .withTimestampAssigner((element, recordTimestamp) -> System.currentTimeMillis())
                         .withIdleness(Duration.ofSeconds(5))
         );
@@ -49,7 +51,6 @@ public class Main {
         toSink.keyBy(processMessage -> 0)
                 .window(TumblingEventTimeWindows.of(Time.milliseconds(1000)))
                 .process(new ConnectivityCheck());
-
 
         env.execute();
     }

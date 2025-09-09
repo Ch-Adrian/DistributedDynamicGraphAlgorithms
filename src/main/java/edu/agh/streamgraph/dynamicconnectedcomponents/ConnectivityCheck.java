@@ -4,6 +4,7 @@ import edu.agh.streamgraph.dynamicconnectedcomponents.algorithmConnectivityIncre
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
+import org.apache.flink.graph.Edge;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -20,9 +21,9 @@ public class ConnectivityCheck extends ProcessWindowFunction<ProcessMessage, Obj
         System.out.println("Window:");
         for(ProcessMessage pm : iterable){
             if(pm.edge != null){
-                vertexToComponent.put(Math.toIntExact(pm.edge.source),
+                vertexToComponent.put(Math.toIntExact(pm.edge.f0),
                         Math.toIntExact(pm.internalMessage.componentId));
-                graph.addNonDirectedEdge(Math.toIntExact(pm.edge.source), Math.toIntExact(pm.edge.target));
+                graph.addNonDirectedEdge(Math.toIntExact(pm.edge.f0), Math.toIntExact(pm.edge.f1));
                 System.out.println("Added edge: " + pm.edge);
             }
         }
