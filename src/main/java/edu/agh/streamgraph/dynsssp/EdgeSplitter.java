@@ -12,4 +12,5 @@ public class EdgeSplitter implements FlatMapFunction<Edge<Integer, NullValue> , 
         collector.collect(ProcessMessage.forVertexAddition(edge));
         collector.collect(ProcessMessage.forVertexAddition(new Edge<Integer, NullValue> (edge.f1, edge.f0, NullValue.getInstance())));
     }
+
 }

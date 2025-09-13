@@ -28,7 +28,7 @@ public class MessageOperator implements FlatMapFunction<Edge<Integer, NullValue>
             vertices.add(integerNullValueEdge.f1);
         }
 
-        if((Math.random() < 0.0001)) {
+        if((Math.random() < 0.001)) {
             Integer vertex1 = (int)Math.floor((Math.random() * vertices.size()));
             MessageWrapper queryWrapperCount = new MessageWrapper(
                     new Edge<Integer, NullValue>(vertex1, vertex1, NullValue.getInstance()),
