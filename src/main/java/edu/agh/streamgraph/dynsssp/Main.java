@@ -35,7 +35,7 @@ public class Main {
         );
 
         IterativeStream<ProcessMessage> internalMessages = initialEdges
-                .flatMap(new EdgeWrapper())
+                .flatMap(new EdgeSplitter())
                 .returns(ProcessMessage.class)
                 .iterate(5000L);
 

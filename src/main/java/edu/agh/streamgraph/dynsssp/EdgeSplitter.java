@@ -5,7 +5,7 @@ import org.apache.flink.graph.Edge;
 import org.apache.flink.types.NullValue;
 import org.apache.flink.util.Collector;
 
-public class EdgeWrapper implements FlatMapFunction<Edge<Integer, NullValue> , ProcessMessage> {
+public class EdgeSplitter implements FlatMapFunction<Edge<Integer, NullValue> , ProcessMessage> {
 
     @Override
     public void flatMap(Edge<Integer, NullValue> edge, Collector<ProcessMessage> collector) throws Exception {
