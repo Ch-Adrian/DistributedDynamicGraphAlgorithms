@@ -9,6 +9,16 @@ public class ProcessMessage {
     public Integer vertexEndpoint;
     public Integer distance;
 
+    public ProcessMessage() {
+    }
+
+    public ProcessMessage(ProcessEvent eventType, Integer vertexId, Integer vertexEndpoint, Integer distance) {
+        this.eventType = eventType;
+        this.vertexId = vertexId;
+        this.vertexEndpoint = vertexEndpoint;
+        this.distance = distance;
+    }
+
 
     public static ProcessMessage forVertexAddition(Edge<Integer, NullValue> edge) {
         ProcessMessage pm = new ProcessMessage();

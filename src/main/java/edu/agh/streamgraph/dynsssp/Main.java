@@ -70,15 +70,12 @@ public class Main {
 
     public static DataStream<ProcessMessage> getResultStream(DataStream<Edge<Integer, NullValue>> graphEdgeStream) {
         IterativeStream<ProcessMessage> internalMessages = graphEdgeStream
+                .flatMap(new MessageOperator())
                 .flatMap(new EdgeSplitter())
                 .returns(ProcessMessage.class)
-                .iterate();
+                .iterate(3000L);
 
         DataStream<ProcessMessage> mainProcess = internalMessages
-//                .filter(msg -> {
-//                    log.info("Sending feedback: {}", msg);
-//                    return true;
-//                })
                 .keyBy(processMessage -> processMessage.vertexId)
                 .process(new DistanceProcessor());
 

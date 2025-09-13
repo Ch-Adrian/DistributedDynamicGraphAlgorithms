@@ -4,5 +4,6 @@ public enum ProcessEvent {
     ADD_VERTEX,
     UPDATE_DISTANCE,
     VERTEX_OUTGOING,
-    REQUEST_DISTANCE
+    REQUEST_DISTANCE,
+    QUERY_DISTANCE
 }

@@ -5,12 +5,16 @@ import org.apache.flink.graph.Edge;
 import org.apache.flink.types.NullValue;
 import org.apache.flink.util.Collector;
 
-public class EdgeSplitter implements FlatMapFunction<Edge<Integer, NullValue> , ProcessMessage> {
+public class EdgeSplitter implements FlatMapFunction<ProcessMessage, ProcessMessage> {
 
     @Override
-    public void flatMap(Edge<Integer, NullValue> edge, Collector<ProcessMessage> collector) throws Exception {
-        collector.collect(ProcessMessage.forVertexAddition(edge));
-        collector.collect(ProcessMessage.forVertexAddition(new Edge<Integer, NullValue> (edge.f1, edge.f0, NullValue.getInstance())));
+    public void flatMap(ProcessMessage message, Collector<ProcessMessage> collector) throws Exception {
+        if(message.eventType == ProcessEvent.ADD_VERTEX) {
+            collector.collect(message);
+            collector.collect(ProcessMessage.forVertexAddition(new Edge<> (message.vertexEndpoint, message.vertexId, NullValue.getInstance())));
+        } else if(message.eventType == ProcessEvent.QUERY_DISTANCE) {
+            collector.collect(message);
+        }
     }
 
 }
