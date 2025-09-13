@@ -3,13 +3,13 @@ package edu.agh.streamgraph.trianglecounting;
 import org.apache.flink.graph.Edge;
 import org.apache.flink.types.NullValue;
 
-public class QueryWrapper {
+public class MessageWrapper {
 
     private final Edge<Integer, NullValue> edge;
-    private final QueryState state;
+    private final MessageState state;
     private Double output;
 
-    public QueryWrapper(Edge<Integer, NullValue> edge, QueryState state) {
+    public MessageWrapper(Edge<Integer, NullValue> edge, MessageState state) {
         this.edge = edge;
         this.state = state;
         this.output = 0.0;
@@ -19,7 +19,7 @@ public class QueryWrapper {
         return edge;
     }
 
-    public QueryState getState() {
+    public MessageState getState() {
         return state;
     }
 

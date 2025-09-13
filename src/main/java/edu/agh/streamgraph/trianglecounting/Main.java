@@ -112,45 +112,50 @@ public class Main {
 
 
     public static SingleOutputStreamOperator<String> getResultStream(DataStream<Edge<Integer, NullValue>> graphEdgeStream) {
-        BroadcastStream<Edge<Integer, NullValue>> broadcastStream = graphEdgeStream
-                .flatMap(new QueryOperator())
+        BroadcastStream<MessageWrapper> broadcastStream = graphEdgeStream
+                .flatMap(new MessageOperator())
                 .flatMap(new EdgeSplitter())
                 .broadcast(NeighborStorage.getDescriptor());
 
-        BroadcastConnectedStream<Edge<Integer, NullValue>, Edge<Integer, NullValue>> broadcastConnectedStream =
+        BroadcastConnectedStream<MessageWrapper, MessageWrapper> broadcastConnectedStream =
                 graphEdgeStream
-                        .keyBy(edge -> edge.f0)
+                        .flatMap(new MessageOperator())
+                        .keyBy(messageWrapper -> messageWrapper.getEdge().f0)
                         .connect(broadcastStream);
 
-        SingleOutputStreamOperator<TriangleState> singleOutputStreamOperator = broadcastConnectedStream
+        SingleOutputStreamOperator<OutputMessageWrapper> singleOutputStreamOperator = broadcastConnectedStream
                 .process(new DetectTrianglesForVertex());
 
         SingleOutputStreamOperator<String> localClusterCoefficient = singleOutputStreamOperator
-                .keyBy(TriangleState::getVertexID)
-                .reduce((TriangleState t1, TriangleState t2) -> {
-                    if(t1.getNumOfNeighbors() > t2.getNumOfNeighbors()){
+                .keyBy(outputMessageWrapper -> outputMessageWrapper.getTriangleState().getVertexID())
+                .reduce((OutputMessageWrapper t1, OutputMessageWrapper t2) -> {
+                    boolean coefficientState = t1.getState() == MessageState.COUNT_COEFFICIENT || t2.getState() == MessageState.COUNT_COEFFICIENT;
+                    if(t1.getTriangleState().getNumOfNeighbors() > t2.getTriangleState().getNumOfNeighbors()){
+                        t1.setState(coefficientState ? MessageState.COUNT_COEFFICIENT : MessageState.ADD_EDGE);
                         return t1;
                     } else {
+                        t2.setState(coefficientState ? MessageState.COUNT_COEFFICIENT : MessageState.ADD_EDGE);
                         return t2;
                     }
+
                 })
-                .keyBy(TriangleState::getVertexID)
+                .keyBy(outputMessageWrapper -> outputMessageWrapper.getTriangleState().getVertexID())
                 .process(new LocalClusteringCoefficient());
 
         localClusterCoefficient.map(new RichMapFunction<String, String>() {
 
-            private Integer countTriangles;
+            private Integer countCoefficients;
 
             @Override
             public void open(Configuration parameters) throws Exception {
                 super.open(parameters);
-                countTriangles = 0;
+                countCoefficients = 0;
             }
 
             @Override
             public String map(String value) throws Exception {
-                countTriangles = countTriangles + 1;
-                System.out.println("Processed triangles: " + countTriangles);
+                countCoefficients = countCoefficients + 1;
+                System.out.println("Requested coefficients: " + countCoefficients + " coefficient: " + value);
                 return value;
             }
         }).setParallelism(1);
